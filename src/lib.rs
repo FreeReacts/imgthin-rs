@@ -1,6 +1,7 @@
 use std::io::{Error, ErrorKind};
 use std::ops::Sub;
 use std::convert::TryFrom;
+use std::fmt::Display;
 
 #[derive(Clone)]
 struct BinImage {
@@ -65,8 +66,8 @@ impl BinImage {
         }
     }
 
-    pub fn get_pixels(self) -> Vec<Vec<bool>> {
-        self.pixels
+    pub fn get_pixels(&self) -> &Vec<Vec<bool>> {
+        &self.pixels
     }
 
     fn get_neighbors(
@@ -102,6 +103,7 @@ impl BinImage {
     }
 }
 
+// Iterator
 struct BinImageIntoIter {
     bin_image: BinImage,
     x: usize,
@@ -146,6 +148,7 @@ impl Iterator for BinImageIntoIter {
    }
 }
 
+// Creating a binary image from binary data
 impl TryFrom<Vec<Vec<bool>>> for BinImage {
     type Error = Error;
 
@@ -168,6 +171,7 @@ impl TryFrom<Vec<Vec<bool>>> for BinImage {
     }
 }
 
+// Substracting a binary image from another image
 impl Sub<BinImage> for BinImage {
     type Output = BinImage;
 
@@ -183,6 +187,26 @@ impl Sub<BinImage> for BinImage {
         }
 
         new_img
+    }
+}
+
+impl Display for BinImage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>)-> std::fmt::Result {
+        let mut display_str = String::new();
+
+        let pixels = self.get_pixels();
+
+        for row in pixels  {
+            for col in row {
+                if col.to_owned() {
+                    display_str.push('X');
+                } else {
+                    display_str.push(' ');
+                }
+            }
+            display_str.push('\n');
+        }
+        write!(f, "") 
     }
 }
 
@@ -221,7 +245,7 @@ fn recursive(image: BinImage, c: usize) -> (BinImage, usize) {
     let sub_iters = vec!(SubIter::First, SubIter::Second);
 
     for sub_iter in sub_iters {
-    
+        dbg!(c);
         let mut m = BinImage::new(image_mut.get_width(), image_mut.get_height(), false);
         let img_iter = image_mut.clone().into_iter();
 
@@ -248,9 +272,10 @@ pub fn imgthin(pixels: Vec<Vec<bool>>) -> Result<Vec<Vec<bool>>, Error> {
 
     match bin_image_result {
         Ok(bin_image)=>{
+            
             let (thinned, _) = recursive(bin_image, 0);
 
-            Ok(thinned.get_pixels())
+            Ok(thinned.get_pixels().to_vec())
 
         }
         Err(e)=>Err(e)
