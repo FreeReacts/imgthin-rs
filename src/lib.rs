@@ -113,10 +113,12 @@ impl BinImage {
         let (a_p, b_p) = calculate_ap_and_bp(p2, p3, p4, p5, p6, p7, p8, p9);
 
         let a = 2 <= b_p && b_p <= 6;
+
         let b = a_p == 1;
+
         let (c, d) = match mode {
-            SubIter::First => (p2 && p4 && p6, p4 && p6 && p8),
-            SubIter::Second => (p2 && p4 && p8, p2 && p6 && p8),
+            SubIter::First => (!(p2 && p4 && p6), !(p4 && p6 && p8)),
+            SubIter::Second => (!(p2 && p4 && p8), !(p2 && p6 && p8)),
         };
 
         a && b && c && d
@@ -150,7 +152,7 @@ impl Iterator for BinImageIntoIter {
         let height = self.bin_image.get_height();
         let width = self.bin_image.get_width();
 
-        if height - 1 <= self.y && width - 1 <= self.x {
+        if height - 1 < self.y && self.x == 0 {
             return None;
         }
 
@@ -204,7 +206,7 @@ impl Sub<BinImage> for BinImage {
 
         for (x, y, val) in iter {
             if val {
-                let _result = new_img.set_value(x, y, false);
+                new_img.set_value(x, y, false).unwrap();
             }
         }
 
@@ -263,18 +265,18 @@ impl Display for BinImage {
 
         for (y, row) in pixels.iter().enumerate() {
             for dig in 0..y_dig {
-                    let digit = if y >= base.pow((x_dig - dig - 1) as u32) {
-                        let digi = getdigit(y, x_dig - dig - 1);
-                        digi.to_string()
-                    } else {
-                        String::from(if x_dig - dig == 1 && y == 0 { "0" } else { " " })
-                    };
+                let digit = if y >= base.pow((x_dig - dig - 1) as u32) {
+                    let digi = getdigit(y, x_dig - dig - 1);
+                    digi.to_string()
+                } else {
+                    String::from(if x_dig - dig == 1 && y == 0 { "0" } else { " " })
+                };
 
-                    display_str.push_str(&digit);
+                display_str.push_str(&digit);
             }
             display_str.push('|');
 
-            for  col in row.iter() {
+            for col in row.iter() {
                 if col.to_owned() {
                     display_str.push('X');
                 } else {
@@ -328,9 +330,9 @@ fn recursive(image: BinImage, c: usize) -> (BinImage, usize) {
         }
         let mut m = BinImage::new(image_mut.get_width(), image_mut.get_height(), false);
         let img_iter = image_mut.clone().into_iter();
-
+        println!("{}", image_mut);
         for (x, y, _) in img_iter {
-            if image_mut.sub_iter(sub_iter.clone(), x, y) {
+            if image_mut.sub_iter(sub_iter.clone(), x, y) && image_mut.get_value(x, y).unwrap() {
                 let _result = m.set_value(x, y, true);
                 c += 1;
             }
@@ -367,34 +369,92 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_calculate_ap_bp(){
-        assert_eq!(calculate_ap_and_bp(true, true, true, true, true, true, true, true), (0,8));
-        assert_eq!(calculate_ap_and_bp(true, true, false, false, true, false, true, true), (2,5));
-        assert_eq!(calculate_ap_and_bp(false, false, false, false, false, false, false, false), (0,0));
+    fn test_calculate_ap_bp() {
+        assert_eq!(
+            calculate_ap_and_bp(true, true, true, true, true, true, true, true),
+            (0, 8)
+        );
+        assert_eq!(
+            calculate_ap_and_bp(true, true, false, false, true, false, true, true),
+            (2, 5)
+        );
+        assert_eq!(
+            calculate_ap_and_bp(false, false, false, false, false, false, false, false),
+            (0, 0)
+        );
     }
 
     #[test]
-    fn test_get_neighbors(){
-        let img = BinImage::try_from(vec!(
-                vec!(false, true, false, true, false, true, false),
-                vec!(false, true, false, true, false, true, false),
-                vec!(false, true, false, true, false, true, false),
-                vec!(false, false, false, true, false, true, true),
-                vec!(false, true, false, true, false, true, false),
-                vec!(true, true, false, true, true, true, false),
-                vec!(false, true, false, true, false, true, false),
-                vec!(false, true, false, true, false, true, false),
-        )).unwrap();
-        println!("Image:-");
+    fn test_get_neighbors() {
+        let img = BinImage::try_from(vec![
+            vec![false, true, false, true, false, true, false],
+            vec![false, true, false, true, false, true, false],
+            vec![false, true, false, true, false, true, false],
+            vec![false, false, false, true, false, true, true],
+            vec![false, true, false, true, false, true, false],
+            vec![true, true, false, true, true, true, false],
+            vec![false, true, false, true, false, true, false],
+            vec![false, true, false, true, false, true, false],
+        ])
+        .unwrap();
+
+        assert_eq!(
+            img.get_neighbors(4, 5),
+            (true, false, true, true, true, false, true, true, true)
+        );
+        assert_eq!(
+            img.get_neighbors(0, 5),
+            (true, false, true, true, true, false, false, false, false)
+        );
+        assert_eq!(
+            img.get_neighbors(1, 3),
+            (false, true, false, false, false, true, false, false, false)
+        );
+    }
+
+    #[test]
+    fn test_sub() {
+        let img = BinImage::try_from(vec![
+            vec![true, false, true, true],
+            vec![false, true, false, true],
+            vec![true, true, false, true],
+        ])
+        .unwrap();
+
+        let empty_img = BinImage::new(4, 3, false);
+
+        let mut test_1_img = empty_img.clone();
+        test_1_img.set_value(1, 1, true).unwrap();
+        test_1_img.set_value(3, 2, true).unwrap();
+
+        let sub_1 = img.clone() - test_1_img;
+
+        assert_eq!(
+            sub_1.get_pixels().to_vec(),
+            vec!(
+                vec!(true, false, true, true),
+                vec!(false, false, false, true),
+                vec!(true, true, false, false)
+            )
+        );
+    }
+
+    #[test]
+    fn test_subiter() {
+        let img = BinImage::try_from(vec![
+            vec![false, true, false, true, false, true, false],
+            vec![false, true, false, true, false, true, false],
+            vec![false, true, false, true, false, true, false],
+            vec![false, false, false, true, false, true, true],
+            vec![false, true, false, true, false, true, false],
+            vec![true, true, false, false, true, true, false],
+            vec![false, true, false, true, true, true, false],
+            vec![false, true, false, true, false, true, false],
+        ])
+        .unwrap();
+
         println!("{}", img);
 
-        assert_eq!(img.get_neighbors(4, 5), (true,false, true, true, true, false, true, true, true));
-        assert_eq!(img.get_neighbors(0, 5), (true, false, true, true, true, false, false, false, false));
-        assert_eq!(img.get_neighbors(1, 3), (false, true, false, false, false, true, false, false, false));
-    }
-
-    #[test]
-    fn test_sub(){
-        
+        assert_eq!(img.sub_iter(SubIter::First, 4, 5), false);
     }
 }
