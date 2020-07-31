@@ -2,6 +2,8 @@ use std::convert::TryFrom;
 use std::fmt::Display;
 use std::io::{Error, ErrorKind};
 use std::ops::Sub;
+use std::path::PathBuf;
+use std::fs::OpenOptions;
 
 #[derive(Clone)]
 struct BinImage {
@@ -112,7 +114,7 @@ impl BinImage {
         let (_, p2, p3, p4, p5, p6, p7, p8, p9) = self.get_neighbors(x, y);
         let (a_p, b_p) = calculate_ap_and_bp(p2, p3, p4, p5, p6, p7, p8, p9);
 
-        let a = 2 <= b_p && b_p <= 6;
+        let a = 2 < b_p && b_p < 6;
 
         let b = a_p == 1;
 
@@ -290,6 +292,27 @@ impl Display for BinImage {
     }
 }
 
+impl TryFrom<PathBuf> for BinImage {
+    type Error = Error;
+
+    fn try_from(path:PathBuf)->Result<BinImage, Error> {
+        let opened = OpenOptions::new()
+            .read(true)
+            .open(path);
+
+        match opened {
+            Ok(file)=>{
+                let mut pixels:Vec<Vec<bool>> = vec!();
+
+                let img_created = BinImage::try_from(pixels);
+
+                img_created
+            }
+            Err(e)=>{Err(e)}
+        }
+    }
+}
+
 fn calculate_ap_and_bp(
     p2: bool,
     p3: bool,
@@ -325,12 +348,10 @@ fn recursive(image: BinImage, c: usize) -> (BinImage, usize) {
     let sub_iters = vec![SubIter::First, SubIter::Second];
 
     for sub_iter in sub_iters {
-        if let SubIter::Second = sub_iter {
-            c = 0;
-        }
+        c = 0;
         let mut m = BinImage::new(image_mut.get_width(), image_mut.get_height(), false);
         let img_iter = image_mut.clone().into_iter();
-        println!("{}", image_mut);
+
         for (x, y, _) in img_iter {
             if image_mut.sub_iter(sub_iter.clone(), x, y) && image_mut.get_value(x, y).unwrap() {
                 let _result = m.set_value(x, y, true);
@@ -353,7 +374,6 @@ pub fn imgthin(pixels: Vec<Vec<bool>>) -> Result<Vec<Vec<bool>>, Error> {
     match bin_image_result {
         Ok(bin_image) => {
             println!("{}", bin_image);
-
             let (thinned, _) = recursive(bin_image, 0);
 
             println!("{}", thinned);
