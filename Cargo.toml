@@ -7,3 +7,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[features]
+
+# Use default version of T.Y Zhang and C.Y. Suen http://www-prima.inrialpes.fr/perso/Tran/Draft/gateway.cfm.pdf
+default = []
+
+# Use improved version of Yung-Sheng CHEN and Wen-Hsing HSU https://www.researchgate.net/publication/222456229_A_modified_fast_parallel_algorithm_for_thinning_digital_patterns
+improved_ysc_whh = []
