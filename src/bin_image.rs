@@ -1,7 +1,7 @@
 // Binary Image Helper Utility
 use crate::common::{calculate_ap_and_bp, SubIter};
 use std::convert::TryFrom;
-#[cfg(test)]
+
 use std::fmt::Display;
 #[cfg(test)]
 use std::fs::OpenOptions;
@@ -127,35 +127,6 @@ impl BinImage {
 
         a && b && c && d
     }
-
-    #[cfg(not(feature = "improved_ysc_whh"))]
-    pub fn sub_iter(&self, mode: SubIter, x: usize, y: usize) -> bool {
-        let (_, p2, p3, p4, p5, p6, p7, p8, p9) = self.get_neighbors(x, y);
-        let (a_p, b_p) = calculate_ap_and_bp(p2, p3, p4, p5, p6, p7, p8, p9);
-
-        let a = 2 <= b_p && b_p <= 7;
-
-        match mode {
-            SubIter::First => {
-                if a_p == 1 {
-                    a && !(p2 && p4 && p6) && !(p4 && p6 && p8)
-                } else if a_p == 2 {
-                    a && ((p2 && p4) && !(p6 || p7 || p8)) || ((p4 && p6) && !(p2 || p8 || p9))
-                } else {
-                    false
-                }
-            }
-            SubIter::Second => {
-                if a_p == 1 {
-                    a && !(p2 && p4 && p8) && !(p2 && p6 && p8)
-                } else if a_p == 2 {
-                    a && ((p2 && p8) && !(p4 || p5 || p6)) || ((p6 && p8) && !(p2 || p3 || p4))
-                } else {
-                    false
-                }
-            }
-        }
-    }
 }
 
 // Iterator
@@ -247,7 +218,7 @@ impl Sub<BinImage> for BinImage {
     }
 }
 
-#[cfg(test)]
+
 impl Display for BinImage {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut display_str = String::new();
@@ -369,4 +340,49 @@ impl TryFrom<PathBuf> for BinImage {
             Err(e) => Err(e),
         }
     }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_get_neighbors() {
+        let img = BinImage::try_from(PathBuf::from("./test_data/test_get_neighbors.txt")).unwrap();
+
+        assert_eq!(
+            img.get_neighbors(4, 5),
+            (true, false, true, true, true, false, true, true, true)
+        );
+        assert_eq!(
+            img.get_neighbors(0, 5),
+            (true, false, true, true, true, false, false, false, false)
+        );
+        assert_eq!(
+            img.get_neighbors(1, 3),
+            (false, true, false, false, false, true, false, false, false)
+        );
+    }
+
+    #[test]
+    fn test_sub() {
+        let img = BinImage::try_from(PathBuf::from("./test_data/test_sub.txt")).unwrap();
+
+        let empty_img = BinImage::new(4, 3, false);
+
+        let mut test_1_img = empty_img.clone();
+        test_1_img.set_value(1, 1, true).unwrap();
+        test_1_img.set_value(3, 2, true).unwrap();
+
+        let sub_1 = img.clone() - test_1_img;
+
+        assert_eq!(
+            sub_1.get_pixels().to_vec(),
+            vec!(
+                vec!(true, false, true, true),
+                vec!(false, false, false, true),
+                vec!(true, true, false, false)
+            )
+        );
+    }
+
 }

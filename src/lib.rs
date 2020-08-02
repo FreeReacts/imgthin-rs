@@ -10,4 +10,6 @@ mod default;
 pub use default::*;
 
 mod bin_image;
-mod common;
+
+pub mod common;
+

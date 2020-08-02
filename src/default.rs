@@ -49,62 +49,6 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_calculate_ap_bp() {
-        assert_eq!(
-            calculate_ap_and_bp(true, true, true, true, true, true, true, true),
-            (0, 8)
-        );
-        assert_eq!(
-            calculate_ap_and_bp(true, true, false, false, true, false, true, true),
-            (2, 5)
-        );
-        assert_eq!(
-            calculate_ap_and_bp(false, false, false, false, false, false, false, false),
-            (0, 0)
-        );
-    }
-
-    #[test]
-    fn test_get_neighbors() {
-        let img = BinImage::try_from(PathBuf::from("./test_data/test_get_neighbors.txt")).unwrap();
-
-        assert_eq!(
-            img.get_neighbors(4, 5),
-            (true, false, true, true, true, false, true, true, true)
-        );
-        assert_eq!(
-            img.get_neighbors(0, 5),
-            (true, false, true, true, true, false, false, false, false)
-        );
-        assert_eq!(
-            img.get_neighbors(1, 3),
-            (false, true, false, false, false, true, false, false, false)
-        );
-    }
-
-    #[test]
-    fn test_sub() {
-        let img = BinImage::try_from(PathBuf::from("./test_data/test_sub.txt")).unwrap();
-
-        let empty_img = BinImage::new(4, 3, false);
-
-        let mut test_1_img = empty_img.clone();
-        test_1_img.set_value(1, 1, true).unwrap();
-        test_1_img.set_value(3, 2, true).unwrap();
-
-        let sub_1 = img.clone() - test_1_img;
-
-        assert_eq!(
-            sub_1.get_pixels().to_vec(),
-            vec!(
-                vec!(true, false, true, true),
-                vec!(false, false, false, true),
-                vec!(true, true, false, false)
-            )
-        );
-    }
-
-    #[test]
     fn test_subiter() {
         let img = BinImage::try_from(PathBuf::from("./test_data/test_subiter.txt")).unwrap();
 

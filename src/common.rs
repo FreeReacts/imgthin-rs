@@ -15,7 +15,7 @@ pub fn calculate_ap_and_bp(
     p8: bool,
     p9: bool,
 ) -> (usize, usize) {
-    let mut arr = vec!(p2, p3, p4, p5, p6, p7, p8, p9);
+    let mut arr = vec![p2, p3, p4, p5, p6, p7, p8, p9];
     let b_p = arr.iter().map(|p| if *p { 1 } else { 0 }).sum::<usize>();
 
     arr.push(p2);
@@ -30,8 +30,27 @@ pub fn calculate_ap_and_bp(
         prev_p = p.to_owned();
     }
 
-    
     (a_p, b_p)
 }
 
+#[cfg(test)]
+mod test {
 
+    use super::*;
+
+    #[test]
+    fn test_calculate_ap_bp() {
+        assert_eq!(
+            calculate_ap_and_bp(true, true, true, true, true, true, true, true),
+            (0, 8)
+        );
+        assert_eq!(
+            calculate_ap_and_bp(true, true, false, false, true, false, true, true),
+            (2, 5)
+        );
+        assert_eq!(
+            calculate_ap_and_bp(false, false, false, false, false, false, false, false),
+            (0, 0)
+        );
+    }
+}
