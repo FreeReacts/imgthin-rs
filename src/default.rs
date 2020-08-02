@@ -111,14 +111,17 @@ mod test {
         assert_eq!(img.sub_iter(SubIter::First, 4, 4), false);
         assert_eq!(img.sub_iter(SubIter::First, 3, 1), true);
         assert_eq!(img.sub_iter(SubIter::Second, 3, 7), true);
-        assert_eq!(img.sub_iter(SubIter::Second, 3, 8), false);
+        assert_eq!(img.sub_iter(SubIter::Second, 3, 6), false);
     }
 
     #[test]
     fn test_char_b() {
         let img = BinImage::try_from(PathBuf::from("./test_data/b_char.txt")).unwrap();
-        println!("{}", img);
+        
         let thinned = recursive(img);
-        println!("{}", thinned);
+
+        let expect_img = BinImage::try_from(PathBuf::from("./test_data/b_char_thinned.txt")).unwrap();
+        assert_eq!(expect_img.get_pixels(), thinned.get_pixels());
+        
     }
 }

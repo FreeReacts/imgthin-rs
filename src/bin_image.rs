@@ -113,7 +113,7 @@ impl BinImage {
         )
     }
 
-    #[cfg(not(feature = "improved_ysc_whh"))]
+    #[cfg(feature = "improved_ysc_whh")]
     pub fn sub_iter(&self, mode: SubIter, x: usize, y: usize) -> bool {
         let (_, p2, p3, p4, p5, p6, p7, p8, p9) = self.get_neighbors(x, y);
         let (a_p, b_p) = calculate_ap_and_bp(p2, p3, p4, p5, p6, p7, p8, p9);
@@ -128,7 +128,7 @@ impl BinImage {
         a && b && c && d
     }
 
-    #[cfg(feature = "improved_ysc_whh")]
+    #[cfg(not(feature = "improved_ysc_whh"))]
     pub fn sub_iter(&self, mode: SubIter, x: usize, y: usize) -> bool {
         let (_, p2, p3, p4, p5, p6, p7, p8, p9) = self.get_neighbors(x, y);
         let (a_p, b_p) = calculate_ap_and_bp(p2, p3, p4, p5, p6, p7, p8, p9);
