@@ -1,7 +1,7 @@
-// Binary Image Helper Utility
+#[cfg(not(feature = "improved_ysc_whh"))]
 use crate::common::{calculate_ap_and_bp, SubIter};
 use std::convert::TryFrom;
-
+#[cfg(test)]
 use std::fmt::Display;
 #[cfg(test)]
 use std::fs::OpenOptions;
@@ -21,6 +21,7 @@ pub struct BinImage {
 
 impl BinImage {
     /// Creating a new image for a given width and height
+    #[cfg(any(test, not(feature = "improved_ysc_whh")))]
     pub fn new(width: usize, height: usize, fill_color: bool) -> BinImage {
         let mut pixels: Vec<Vec<bool>> = vec![];
 
@@ -113,7 +114,7 @@ impl BinImage {
         )
     }
 
-    #[cfg(feature = "improved_ysc_whh")]
+    #[cfg(not(feature = "improved_ysc_whh"))]
     pub fn sub_iter(&self, mode: SubIter, x: usize, y: usize) -> bool {
         let (_, p2, p3, p4, p5, p6, p7, p8, p9) = self.get_neighbors(x, y);
         let (a_p, b_p) = calculate_ap_and_bp(p2, p3, p4, p5, p6, p7, p8, p9);
@@ -218,7 +219,7 @@ impl Sub<BinImage> for BinImage {
     }
 }
 
-
+#[cfg(test)]
 impl Display for BinImage {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut display_str = String::new();
@@ -384,5 +385,4 @@ mod test {
             )
         );
     }
-
 }

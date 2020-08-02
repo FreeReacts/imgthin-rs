@@ -111,10 +111,10 @@ pub fn imgthin(pixels: Vec<Vec<bool>>) -> Result<Vec<Vec<bool>>, Error> {
         while let Some((x, y, val)) = k_t_iter.next() {
             if val {
                 let neighbors = s_t.get_neighbors(x, y);
-                
+
                 let j = bin_to_dec([neighbors.1, neighbors.2, neighbors.3, neighbors.4]);
                 let i = bin_to_dec([neighbors.5, neighbors.6, neighbors.7, neighbors.8]);
-       
+
                 let d_out = match k {
                     SubIter::First => sub_1_table.get(i).unwrap().get(j).unwrap(),
                     SubIter::Second => sub_2_table.get(i).unwrap().get(j).unwrap(),
@@ -336,9 +336,8 @@ mod test {
 
         let thinned_img = BinImage::try_from(thinned).unwrap();
         println!("{}", thinned_img);
-
         let expect_img =
-            BinImage::try_from(PathBuf::from("./test_data/b_char_thinned.txt")).unwrap();
-        // assert_eq!(expect_img.get_pixels().to_vec(), thinned);
+            BinImage::try_from(PathBuf::from("./test_data/b_char_improved_thinned.txt")).unwrap();
+        assert_eq!(expect_img.get_pixels(), thinned_img.get_pixels());
     }
 }

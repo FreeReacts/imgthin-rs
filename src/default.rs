@@ -61,11 +61,11 @@ mod test {
     #[test]
     fn test_char_b() {
         let img = BinImage::try_from(PathBuf::from("./test_data/b_char.txt")).unwrap();
-        
+
         let thinned = recursive(img);
 
-        let expect_img = BinImage::try_from(PathBuf::from("./test_data/b_char_thinned.txt")).unwrap();
+        let expect_img =
+            BinImage::try_from(PathBuf::from("./test_data/b_char_thinned.txt")).unwrap();
         assert_eq!(expect_img.get_pixels(), thinned.get_pixels());
-        
     }
 }
