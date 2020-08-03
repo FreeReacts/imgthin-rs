@@ -42,7 +42,6 @@ fn sub_iter(
     }
 }
 
-/// Thinning a binary image
 fn make_table(sub_iter_type: SubIter) -> Vec<Vec<bool>> {
     // Making the mapping table
     let mut table: Vec<Vec<bool>> = vec![];

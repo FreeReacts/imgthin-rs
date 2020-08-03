@@ -1,5 +1,4 @@
 # imgthin-rs
-[![GitHub Actions](https://github.com/FreeReacts/imgthin-rs/workflows/Main/badge.svg)](https://github.com/FreeReacts/imgthin-rs/actions) [![crates.io](http://meritbadge.herokuapp.com/imgthin)](https://crates.io/crates/imgthin) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![Released API docs](https://docs.rs/imgthin/badge.svg)](http://docs.rs/imgthin) [![Master API docs](https://img.shields.io/badge/docs-master-green.svg)](https://docs.rs/imgthin)
 
 A rust image thinning library inspired by
 
@@ -55,6 +54,13 @@ let thinned = imgthin(vec!(
 )).expect("Can not thin the image.");
 
 ```
+
+## Showcase
+
+Passed | Thinned
+------ | --------
+![imgthin-rs Passed Image](./examples/zhang-suen/image/original.png) | ![imgthin-rs Thinned Image](./examples/zhang-suen/image/thinned.png)
+
 
 ## Contributions
 
