@@ -335,7 +335,7 @@ mod test {
         let thinned = imgthin(img.get_pixels().to_vec()).unwrap();
 
         let thinned_img = BinImage::try_from(thinned).unwrap();
-        println!("{}", thinned_img);
+
         let expect_img =
             BinImage::try_from(PathBuf::from("./test_data/b_char_improved_thinned.txt")).unwrap();
         assert_eq!(expect_img.get_pixels(), thinned_img.get_pixels());
