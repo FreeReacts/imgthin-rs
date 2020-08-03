@@ -5,6 +5,7 @@ use std::io::Error;
 #[cfg(test)]
 use std::path::PathBuf;
 
+/// Thinning a binary image
 pub fn imgthin(pixels: Vec<Vec<bool>>) -> Result<Vec<Vec<bool>>, Error> {
     let bin_image_result = BinImage::try_from(pixels);
 
