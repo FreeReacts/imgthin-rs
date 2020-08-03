@@ -4,6 +4,16 @@ version = "0.1.0"
 authors = ["WhizSid <whizsid@aol.com>"]
 edition = "2018"
 
+license = "MIT"
+keywords = ["image", "image-processing", "thinning", "ocr", "image-thinning", "parallel"]
+homepage = "https://github.com/FreeReacts/imgthin-rs"
+repository = "https://github.com/FreeReacts/imgthin-rs"
+documentation = "https://docs.rs/imgthin"
+readme = "README.md"
+description = """
+A fast parallel algorithm for thinning digital patterns
+"""
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
