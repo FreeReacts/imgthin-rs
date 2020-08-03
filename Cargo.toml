@@ -5,7 +5,7 @@ authors = ["WhizSid <whizsid@aol.com>"]
 edition = "2018"
 
 license = "MIT"
-keywords = ["image", "image-processing", "thinning", "ocr", "image-thinning", "parallel"]
+keywords = ["image", "image-processing", "thinning", "ocr", "image-thinning"]
 homepage = "https://github.com/FreeReacts/imgthin-rs"
 repository = "https://github.com/FreeReacts/imgthin-rs"
 documentation = "https://docs.rs/imgthin"
