@@ -1,5 +1,5 @@
 # imgthin-rs
-
+[![GitHub Actions](https://github.com/FreeReacts/imgthin-rs/workflows/Main/badge.svg)](https://github.com/FreeReacts/imgthin-rs/actions) [![crates.io](http://meritbadge.herokuapp.com/imgthin)](https://crates.io/crates/imgthin) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![Released API docs](https://docs.rs/imgthin/badge.svg)](http://docs.rs/imgthin) [![Master API docs](https://img.shields.io/badge/docs-master-green.svg)](https://docs.rs/imgthin)
 A rust image thinning library inspired by
 
 > A fast parallel algorithm for thinning digital patterns. (Improved/ Original)
