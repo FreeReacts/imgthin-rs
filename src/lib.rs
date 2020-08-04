@@ -66,4 +66,4 @@ pub use default::*;
 
 mod bin_image;
 
-pub mod common;
+mod common;
