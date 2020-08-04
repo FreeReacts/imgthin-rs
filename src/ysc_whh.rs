@@ -94,10 +94,8 @@ fn bin_to_dec(bin: [bool; 4]) -> usize {
 }
 
 pub fn imgthin(pixels: Vec<Vec<bool>>) -> Result<Vec<Vec<bool>>, Error> {
-    let k_t = BinImage::try_from(pixels)?;
+    let mut k_t = BinImage::try_from(pixels)?;
     let mut s_t = k_t.clone();
-
-    let mut k_t_iter = k_t.into_iter();
 
     let sub_1_table = make_table(SubIter::First);
     let sub_2_table = make_table(SubIter::Second);
@@ -108,20 +106,20 @@ pub fn imgthin(pixels: Vec<Vec<bool>>) -> Result<Vec<Vec<bool>>, Error> {
 
     while flag {
         flag = false;
+        let mut k_t_iter = k_t.into_iter();
+
         while let Some((x, y, val)) = k_t_iter.next() {
             if val {
                 let neighbors = s_t.get_neighbors(x, y);
 
-                let j = bin_to_dec([neighbors.1, neighbors.2, neighbors.3, neighbors.4]);
-                let i = bin_to_dec([neighbors.5, neighbors.6, neighbors.7, neighbors.8]);
-
+                let j = bin_to_dec([neighbors.4, neighbors.3, neighbors.2, neighbors.1]);
+                let i = bin_to_dec([neighbors.8, neighbors.7, neighbors.6, neighbors.5]);
                 let d_out = match k {
                     SubIter::First => sub_1_table.get(i).unwrap().get(j).unwrap(),
                     SubIter::Second => sub_2_table.get(i).unwrap().get(j).unwrap(),
                 };
 
                 s_t.set_value(x, y, d_out.to_owned())?;
-
                 if !d_out {
                     flag = true;
                 }
@@ -132,6 +130,7 @@ pub fn imgthin(pixels: Vec<Vec<bool>>) -> Result<Vec<Vec<bool>>, Error> {
         let t = k;
         k = s;
         s = t;
+        k_t = s_t.clone();
     }
 
     Ok(s_t.get_pixels().to_vec())

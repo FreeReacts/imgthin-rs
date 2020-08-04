@@ -29,7 +29,7 @@ To use the original algorithm from Zhang and Suen:-
 ```toml
 # Cargo.toml
 
-imgthin = "0.1.0"
+imgthin = "0.1.1"
 ```
 
 To use the improved algorithm from Yung Sheng and Wen-Hsing:-
@@ -37,7 +37,7 @@ To use the improved algorithm from Yung Sheng and Wen-Hsing:-
 ```toml
 # Cargo.toml
 
-imgthin = {version = "0.1.0", features=["improved_ysc_whh"]}
+imgthin = {version = "0.1.1", features=["improved_ysc_whh"]}
 
 ```
 
@@ -61,7 +61,7 @@ let thinned = imgthin(vec!(
 Passed | Thinned
 ------ | --------
 ![imgthin-rs Passed Image](./examples/zhang-suen/image/original.png) | ![imgthin-rs Thinned Image](./examples/zhang-suen/image/thinned.png)
-
+![imgthin-rs Passed Image](./examples/sheng-hsing/image/original.png) | ![imgthin-rs Thinned Image](./examples/sheng-hsing/image/thinned.png)
 
 ## Contributions
 
